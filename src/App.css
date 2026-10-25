@@ -1,0 +1,239 @@
+ /* ===== Theme tokens ===== */
+:root {
+  /* Sunset (default / "light") */
+  --ink: #fff4e6;
+  --mute: #fdd5bd;
+  --accent: #ffd166;
+  --glass: rgba(58, 18, 62, 0.5);
+  --line: rgba(255, 220, 190, 0.28);
+  --sea1: #ff8a5c;
+  --sea2: #3a1250;
+  --glint: 255, 205, 120;
+}
+
+html.dark {
+  /* Night */
+  --ink: #e8eefc;
+  --mute: #a3b4d4;
+  --accent: #a5b4fc;
+  --glass: rgba(10, 16, 40, 0.6);
+  --line: rgba(255, 255, 255, 0.16);
+  --sea1: #14284f;
+  --sea2: #050b1f;
+  --glint: 190, 210, 255;
+}
+
+html { scroll-behavior: smooth; }
+
+/* ===== Fixed background layers ===== */
+.fx {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.sky-day {
+  background: linear-gradient(
+    #2b1055 0%,
+    #6b2d8e 22%,
+    #c9407a 42%,
+    #ff6b5e 60%,
+    #ff9966 76%,
+    #ffd194 100%
+  );
+  transition: opacity 1.4s;
+}
+.sky-night {
+  background: linear-gradient(#020617, #0c1445 55%, #1e2a6b);
+  opacity: 0;
+  transition: opacity 1.4s;
+}
+html.dark .sky-night { opacity: 1; }
+html.dark .sky-day { opacity: 0; }
+
+/* ===== Sun / Moon ===== */
+.orb {
+  --s: clamp(150px, 22vw, 270px);
+  position: absolute;
+  left: 50%;
+  width: var(--s);
+  aspect-ratio: 1;
+  margin-left: calc(var(--s) / -2);
+  border-radius: 50%;
+  transition: transform 1.6s cubic-bezier(0.5, 0, 0.2, 1), opacity 1.2s;
+}
+
+/* Sunset sun: sits right on the horizon (ocean top = 64vh) */
+.sun { top: calc(64vh - var(--s) * 0.58); }
+
+.sun-glow {
+  position: absolute;
+  inset: -95%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 190, 90, 0.8) 0%,
+    rgba(255, 110, 80, 0.4) 30%,
+    rgba(255, 80, 120, 0.15) 50%,
+    transparent 68%
+  );
+  animation: pulse 6s ease-in-out infinite;
+}
+
+.sun-disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff2b0 0%, #ffc233 30%, #ff7a2f 62%, #ff3d5a 100%);
+  box-shadow: 0 0 60px 10px rgba(255, 150, 60, 0.6);
+  /* retro sunset stripes across the lower part */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0 30%, transparent 30% 34%,
+    #000 34% 42%, transparent 42% 47%,
+    #000 47% 54%, transparent 54% 60%,
+    #000 60%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0 30%, transparent 30% 34%,
+    #000 34% 42%, transparent 42% 47%,
+    #000 47% 54%, transparent 54% 60%,
+    #000 60%
+  );
+}
+
+.moon {
+  --s: clamp(110px, 15vw, 190px);
+  top: 20vh;
+  background: radial-gradient(circle at 28% 26%, #fff, #eef0f8 50%, #c7cce0);
+  box-shadow: 0 0 50px 12px rgba(190, 205, 255, 0.45), 0 0 140px 50px rgba(120, 140, 255, 0.25);
+  transform: translateY(70vh);
+  opacity: 0;
+  overflow: hidden;
+}
+.moon i {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(120, 130, 170, 0.28);
+  box-shadow: inset 2px 2px 4px rgba(80, 90, 130, 0.3);
+}
+
+/* switching to night: sun sinks, moon rises */
+html.dark .sun { transform: translateY(60vh) scale(0.8); opacity: 0; }
+html.dark .moon { transform: none; opacity: 1; animation: pulse 7s ease-in-out infinite; }
+
+@keyframes pulse {
+  50% { filter: brightness(1.1); scale: 1.03; }
+}
+
+/* ===== Stars + shooting star (night only) ===== */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 1.5s;
+}
+html.dark .star { opacity: 1; animation: tw var(--d) ease-in-out infinite; }
+@keyframes tw { 50% { opacity: 0.15; } }
+
+.shoot {
+  position: absolute;
+  top: 12%;
+  left: 70%;
+  width: 130px;
+  height: 2px;
+  background: linear-gradient(90deg, #fff, transparent);
+  opacity: 0;
+  transform: rotate(-35deg);
+}
+html.dark .shoot { animation: shoot 9s ease-in 2s infinite; }
+@keyframes shoot {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(-35deg); }
+  3%   { opacity: 1; }
+  12%  { opacity: 0; transform: translate(-420px, 300px) rotate(-35deg); }
+  100% { opacity: 0; }
+}
+
+/* ===== Clouds ===== */
+.cloud {
+  position: absolute;
+  height: 50px;
+  border-radius: 50px;
+  background: #ffb89a;
+  opacity: 0.7;
+  filter: blur(2px);
+  animation: cloud linear infinite;
+  transition: opacity 1.4s, background 1.4s;
+}
+.cloud::before, .cloud::after { content: ""; position: absolute; background: inherit; border-radius: 50%; }
+.cloud::before { width: 50%; height: 140%; left: 15%; top: -60%; }
+.cloud::after  { width: 36%; height: 110%; left: 50%; top: -35%; }
+html.dark .cloud { background: #3b4a8a; opacity: 0.25; }
+@keyframes cloud { from { transform: translateX(-30vw); } to { transform: translateX(130vw); } }
+
+/* ===== Ocean ===== */
+.ocean {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 36vh;
+  background: linear-gradient(var(--sea1), var(--sea2));
+  transition: background 1.4s;
+}
+.wave {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 70px;
+  color: var(--sea1);
+  animation: drift linear infinite;
+}
+.wave path { fill: currentColor; }
+@keyframes drift { to { transform: translateX(-50%); } }
+
+.glint {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: min(240px, 42vw);
+  height: 67%;
+  margin-left: calc(min(240px, 42vw) / -2);
+  background: repeating-linear-gradient(to bottom, rgba(var(--glint), 0.8) 0 3px, transparent 3px 13px);
+  -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+  mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+  clip-path: polygon(32% 0, 68% 0, 100% 100%, 0 100%);
+  animation: glint 2.6s ease-in-out infinite alternate;
+}
+@keyframes glint {
+  from { opacity: 0.35; transform: scaleX(0.9); }
+  to   { opacity: 0.95; transform: scaleX(1.05); }
+}
+
+.boat { position: absolute; left: 0; top: -34px; animation: sail 50s linear infinite; }
+.boat svg { animation: bob 3s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes sail { from { transform: translateX(-12vw); } to { transform: translateX(112vw); } }
+@keyframes bob { 50% { transform: translateY(3px) rotate(3deg); } }
+
+/* ===== UI helpers ===== */
+.pane {
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  transition: background 1.2s, border-color 1.2s;
+}
+.tag { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+
+.list:hover .item:not(:hover) { opacity: 0.5; }
+.item { transition: opacity 0.25s, transform 0.25s; }
+.item:hover { transform: translateY(-2px); }
+
+.rv { opacity: 0; transform: translateY(24px); transition: opacity 0.8s, transform 0.8s; }
+.rv.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .rv { opacity: 1; transform: none; }
+}

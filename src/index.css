@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* expose the theme variables from App.css as Tailwind colors (text-ink, text-mute, text-accent) */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-accent: var(--accent);
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: #2b1055;
+  -webkit-font-smoothing: antialiased;
+}
